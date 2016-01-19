@@ -21,7 +21,7 @@ app.use('/client', express.static(path.join(process.cwd(), '/client')));
 app.disable('x-powered-by');
 
 var env = {
-  production: process.env.NODE_ENV === 'production'
+  production: process.env.NODE_ENV === 'production',
 };
 
 if (env.production) {
@@ -45,8 +45,9 @@ if (env.production === false) {
   var webpack = require('webpack');
   var WebpackDevServer = require('webpack-dev-server');
 
-  var webpackDevConfig = require('./webpack.config.development');
-
+  var webpackDevConfig = require('./webpack/webpack.config.development');
+  var webpackPort = Number(process.env.WEBPACK_PORT) || 9090;
+  env.webpackPort = webpackPort;
   new WebpackDevServer(webpack(webpackDevConfig), {
     publicPath: '/client/',
     contentBase: './client/',
@@ -58,11 +59,11 @@ if (env.production === false) {
       'Access-Control-Allow-Origin': 'http://localhost:3001',
       'Access-Control-Allow-Headers': 'X-Requested-With'
     }
-  }).listen(3000, 'localhost', function (err) {
+  }).listen(webpackPort, 'localhost', function (err) {
     if (err) {
       console.log(err);
     }
 
-    console.log('webpack dev server listening on localhost:3000');
+    console.log('webpack dev server listening on localhost:' + webpackPort);
   });
 }

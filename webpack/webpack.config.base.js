@@ -25,7 +25,7 @@ module.exports = {
   output: {
     path: path.join(process.cwd(), '/client'),
     pathInfo: true,
-    publicPath: 'http://localhost:3000/client/',
+    publicPath: 'http://localhost:9090/client/',
     filename: 'main.js'
   },
 
@@ -50,7 +50,10 @@ module.exports = {
 
   module: {
     loaders: [
-      {test: /\.scss$/, loader: 'style!css!autoprefixer?browsers=last 2 version!sass?outputStyle=expanded'}
+      {
+        loader: 'style!css!autoprefixer?browsers=last 2 version!sass?outputStyle=expanded',
+        test: /\.scss$/,
+      },
     ],
 
     noParse: /\.min\.js/
