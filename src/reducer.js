@@ -42,6 +42,29 @@ const handlers = {
         characterIndex: 0,
       }
     }
+  },
+  DELETE(state, {payload}) {
+    const {
+      cursor: {
+        blockIndex,
+        characterIndex
+      }
+    } = state;
+    let block = state.blocks[blockIndex];
+    block = block.substring(0, characterIndex) + block.substring(characterIndex + 1, block.length);
+
+    return {
+      ...state,
+      blocks: [
+        ...state.blocks.slice(0, blockIndex),
+        block,
+        ...state.blocks.slice(blockIndex + 1)
+      ],
+      cursor: {
+        ...state.cursor,
+        characterIndex: characterIndex - 1
+      }
+    };
   }
 }
 
