@@ -1,5 +1,6 @@
 import React from 'react';
-import { compose, withState, mapProps } from 'recompose';
+import { compose, withReducer, mapProps } from 'recompose';
+import reducer, { defaultState } from './reducer';
 import keys from './lib/keys';
 
 const styles = {
@@ -11,17 +12,26 @@ const styles = {
 }
 
 const KEY_MAPS = {
-  [keys.ENTER]: '\n'
+  [keys.ENTER]: 'NEW_LINE'
 }
 
-function handleKey(e) {
+function handleKey(e, dispatch) {
   const { shiftKey, charCode } = e;
-  return KEY_MAPS[charCode] || String.fromCharCode(charCode);
+  const action = KEY_MAPS[charCode] ? {
+    type: KEY_MAPS[charCode]
+  } : {
+    type: 'INSERT',
+    payload: {
+      text: String.fromCharCode(charCode)
+    }
+  };
+
+  dispatch(action);
 }
 
 function editor(props) {
   const {
-    text,
+    state,
     onKeyPress,
   } = props;
 
@@ -31,19 +41,20 @@ function editor(props) {
       style={styles.root}
       onKeyPress={onKeyPress}
       >
-    <div>{ text }</div>
+    <div>
+      {state.content.map((p, index) =>
+        <p key={index}>{ p }</p>
+      )}
+    </div>
     </section>
   );
 }
 
 export default compose(
-  withState('text', 'setText', ''),
-  mapProps(({ setText, ...rest }) => {
+  withReducer('state', 'dispatch', reducer, defaultState),
+  mapProps(({ dispatch, ...rest }) => {
     return {
-      onKeyPress: e => {
-        const char = handleKey(e);
-        setText(t => (console.log(t.length, t), t + char));
-      },
+      onKeyPress: e => handleKey(e, dispatch),
       ...rest,
     }
   })
