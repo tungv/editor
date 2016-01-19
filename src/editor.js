@@ -15,8 +15,28 @@ const KEY_MAPS = {
   [keys.ENTER]: 'NEW_LINE'
 }
 
-function handleKey(e, dispatch) {
+function handleKeyDown(e, dispatch) {
+  const { keyCode } = e;
+  let stop = false;
+  if (keyCode === keys.BACKSPACE) {
+    stop = true;
+    dispatch({
+      type: 'DELETE',
+      payload: {
+        direction: 'LEFT'
+      }
+    })
+  }
+
+  if (stop) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}
+
+function handleKeyPress(e, dispatch) {
   const { shiftKey, charCode } = e;
+
   const action = KEY_MAPS[charCode] ? {
     type: KEY_MAPS[charCode]
   } : {
@@ -27,23 +47,53 @@ function handleKey(e, dispatch) {
   };
 
   dispatch(action);
+  return false;
 }
 
-function editor(props) {
+function Cursor(props) {
+  return (
+    <div style={{position: 'absolute', width: '2px', background: 'red', display: 'inline-block', marginLeft: '1px'}}
+      children={['\uFEFF']}
+    />
+  );
+}
+
+function Paragraph(props) {
+  const { cursor } = props;
+  return (<div style={{position: 'relative'}}>
+    <div style={{position: 'relative'}}>{ props.content }</div>
+    { cursor &&
+      <div style={{position: 'absolute', top: '0'}}>
+        <span style={{visibility: 'hidden'}}>
+          { props.content.slice(0, cursor.characterIndex + 1) }
+        </span>
+        <Cursor />
+      </div>
+    }
+  </div>);
+}
+
+function Editor(props) {
   const {
-    state,
+    state: {
+      cursor,
+      blocks,
+    },
     onKeyPress,
+    onKeyDown,
   } = props;
+
 
   return (
     <section
       tabIndex={1}
       style={styles.root}
       onKeyPress={onKeyPress}
+      onKeyDown={onKeyDown}
       >
     <div>
-      {state.content.map((p, index) =>
-        <p key={index}>{ p }</p>
+      {blocks.map((block, index) =>
+        <Paragraph key={index} content={block} cursor={cursor.blockIndex === index ? cursor : null}/>
       )}
     </div>
     </section>
@@ -54,8 +104,9 @@ export default compose(
   withReducer('state', 'dispatch', reducer, defaultState),
   mapProps(({ dispatch, ...rest }) => {
     return {
-      onKeyPress: e => handleKey(e, dispatch),
+      onKeyDown: e => handleKeyDown(e, dispatch),
+      onKeyPress: e => handleKeyPress(e, dispatch),
       ...rest,
     }
   })
-)(editor);
+)(Editor);

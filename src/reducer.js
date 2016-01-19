@@ -2,28 +2,45 @@ import keys from './lib/keys';
 import { handleActions } from 'redux-actions';
 
 export const defaultState = {
-  content: []
+  blocks: [],
+  cursor: {
+    blockIndex: 0,
+    characterIndex: 0,
+  }
 };
 
 const handlers = {
   INSERT(state, {payload}) {
-    const last = state.content.slice(-1)[0] || [];
-    const initial = state.content.slice(0, -1);
+    const last = state.blocks.slice(-1)[0] || [];
+    const initial = state.blocks.slice(0, -1);
+    const updatedLast = last + payload.text;
+    const blocks = [
+      ...initial,
+      updatedLast,
+    ];
+
     return {
       ...state,
-      content: [
-        ...initial,
-        last + payload.text
-      ]
+      blocks,
+      cursor: {
+        ...state.cursor,
+        blockIndex: blocks.length - 1,
+        characterIndex: updatedLast.length - 1,
+      }
     }
   },
   NEW_LINE(state) {
     return {
       ...state,
-      content: [
-        ...state.content,
+      blocks: [
+        ...state.blocks,
         ''
-      ]
+      ],
+      cursor: {
+        ...state.cursor,
+        blockIndex: state.blocks.length,
+        characterIndex: 0,
+      }
     }
   }
 }
