@@ -2,12 +2,20 @@ import React from 'react';
 import { compose, withReducer, mapProps } from 'recompose';
 import reducer, { defaultState } from './reducer';
 import keys from './lib/keys';
+import Paragraph from './components/Paragraph';
 
 const styles = {
   root: {
+    boxSizing: 'border-box',
     width: '100%',
     height: '300px',
-    background: 'lightgray'
+    background: 'white',
+    border: 'solid 1px black',
+    padding: '8px',
+    outline: 'none'
+  },
+  placeholder: {
+    color: 'lightgray'
   }
 }
 
@@ -50,29 +58,6 @@ function handleKeyPress(e, dispatch) {
   return false;
 }
 
-function Cursor(props) {
-  return (
-    <div style={{position: 'absolute', width: '2px', background: 'red', display: 'inline-block', marginLeft: '1px'}}
-      children={['\uFEFF']}
-    />
-  );
-}
-
-function Paragraph(props) {
-  const { cursor } = props;
-  return (<div style={{position: 'relative'}}>
-    <div style={{position: 'relative', wordWrap: 'break-word', width: '100%'}}>{ props.content }</div>
-    { cursor &&
-      <div style={{position: 'absolute', top: '0', wordWrap: 'break-word', width: '100%'}}>
-        <span style={{visibility: 'hidden'}}>
-          { props.content.slice(0, cursor.characterIndex + 1) }
-        </span>
-        <Cursor />
-      </div>
-    }
-  </div>);
-}
-
 function Editor(props) {
   const {
     state: {
@@ -83,6 +68,12 @@ function Editor(props) {
     onKeyDown,
   } = props;
 
+  const isEmpty = !blocks.length || !blocks[0].length;
+  const body = isEmpty ?
+    <span key="placeholder" style={styles.placeholder}>enter text...</span> :
+    blocks.map((block, index) =>
+      <Paragraph key={index} content={block} cursor={cursor.blockIndex === index ? cursor : null}/>
+    )
 
   return (
     <section
@@ -91,11 +82,9 @@ function Editor(props) {
       onKeyPress={onKeyPress}
       onKeyDown={onKeyDown}
       >
-    <div>
-      {blocks.map((block, index) =>
-        <Paragraph key={index} content={block} cursor={cursor.blockIndex === index ? cursor : null}/>
-      )}
-    </div>
+      <div key='body'>
+        { body }
+      </div>
     </section>
   );
 }
