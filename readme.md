@@ -1,5 +1,5 @@
-# react-editor [![Build Status][travis-badge]][travis] [![Coverage Status][coveralls-badge]][coveralls]
-> Simple production-ready text editor using [React](http://facebook.github.io/react/) and [Webpack](http://webpack.github.io/) (SASS and React hot reloading) and tests with Jest.
+# react-editor
+> Simple production-ready text editor using [React](http://facebook.github.io/react/) and tests with Jest.
 
 ## Install
 

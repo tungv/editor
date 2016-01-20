@@ -1,7 +1,7 @@
 {
   "name": "react-editor",
-  "version": "2.0.0",
-  "description": "Simple production ready boilerplate for React, Webpack (SASS and React hot reloading), tests and coverage.",
+  "version": "0.0.1",
+  "description": "Simple production ready rich text editor using React, tests and coverage.",
   "main": "index.js",
   "scripts": {
     "start": "node index",
@@ -12,27 +12,27 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/srn/react-editor.git"
+    "url": "https://github.com/tungv/react-editor.git"
   },
   "engines": {
-    "node": "5",
+    "node": "4",
     "npm": "3"
   },
   "keywords": [
     "react",
     "webpack",
-    "boilerplate",
+    "editor",
     "production",
     "sass",
     "hot",
     "reload"
   ],
-  "author": "Søren Brokær <root@srn.io> (http://srn.io)",
+  "author": "Tung VU <me@tungv.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/srn/react-editor/issues"
+    "url": "https://github.com/tungv/react-editor/issues"
   },
-  "homepage": "https://github.com/srn/react-editor",
+  "homepage": "https://github.com/tungv/react-editor",
   "dependencies": {
     "babel-polyfill": "6.3.14",
     "babel-runtime": "6.3.19",
