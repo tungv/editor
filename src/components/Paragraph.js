@@ -15,7 +15,7 @@ export default function Paragraph(props) {
     { cursor &&
       <div style={{position: 'absolute', top: '0', wordWrap: 'break-word', width: '100%'}}>
         <span style={{visibility: 'hidden'}}>
-          { content.slice(0, cursor.characterIndex + 1) }
+          { content.slice(0, cursor.characterIndex) }
         </span>
         <Cursor />
       </div>

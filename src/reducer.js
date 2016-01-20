@@ -2,12 +2,22 @@ import keys from './lib/keys';
 import { handleActions } from 'redux-actions';
 
 export const defaultState = {
-  blocks: [],
+  blocks: [''],
   cursor: {
     blockIndex: 0,
     characterIndex: 0,
   }
 };
+
+export function insertAt(initial, text, position) {
+  if (typeof position !== 'number' || position > initial.length) {
+    return initial + text;
+  }
+
+  const before = initial.substring(0, position);
+  const after = initial.substring(position);
+  return [before, text, after].join('');
+}
 
 export function moveCursor(col, row, direction, blocks) {
   const block = blocks[row];
@@ -15,12 +25,12 @@ export function moveCursor(col, row, direction, blocks) {
   switch (direction) {
     case 'LEFT':
       return {
-        col: Math.max(col - 1, -1),
+        col: Math.max(col - 1, 0),
         row: row
       };
     case 'RIGHT':
       return {
-        col: Math.min(col + 1, maxInRow - 1),
+        col: Math.min(col + 1, maxInRow),
         row: row
       };
     case 'UP':
@@ -40,21 +50,27 @@ export function moveCursor(col, row, direction, blocks) {
 
 const handlers = {
   INSERT(state, {payload}) {
-    const last = state.blocks.slice(-1)[0] || [];
-    const initial = state.blocks.slice(0, -1);
-    const updatedLast = last + payload.text;
-    const blocks = [
-      ...initial,
-      updatedLast,
+    const {
+      cursor: {
+        blockIndex,
+        characterIndex
+      },
+      blocks,
+    } = state;
+    const block = state.blocks[blockIndex];
+    const updatedBlock = insertAt(block, payload.text, characterIndex);
+    const updatedBlocks = [
+      ...blocks.slice(0, blockIndex),
+      updatedBlock,
+      ...blocks.slice(blockIndex + 1),
     ];
 
     return {
       ...state,
-      blocks,
+      blocks: updatedBlocks,
       cursor: {
         ...state.cursor,
-        blockIndex: blocks.length - 1,
-        characterIndex: updatedLast.length - 1,
+        characterIndex: characterIndex + 1
       }
     }
   },
@@ -80,7 +96,7 @@ const handlers = {
       }
     } = state;
     let block = state.blocks[blockIndex];
-    block = block.substring(0, characterIndex) + block.substring(characterIndex + 1, block.length);
+    block = block.substring(0, characterIndex - 1) + block.substring(characterIndex, block.length);
 
     return {
       ...state,
@@ -91,7 +107,7 @@ const handlers = {
       ],
       cursor: {
         ...state.cursor,
-        characterIndex: characterIndex - 1
+        characterIndex: Math.max(characterIndex - 1, 0)
       }
     };
   },

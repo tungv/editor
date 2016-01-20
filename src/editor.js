@@ -100,6 +100,9 @@ function Editor(props) {
       <div key='body'>
         { body }
       </div>
+      <pre key='debugger'>
+        { JSON.stringify(props.state, null, 2) }
+      </pre>
     </section>
   );
 }
