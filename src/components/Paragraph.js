@@ -10,7 +10,7 @@ export default function Paragraph(props) {
   const content = keepSpace(props.content);
   return (<div style={{position: 'relative'}}>
     <div style={{position: 'relative', wordWrap: 'break-word', width: '100%'}}>
-      { content }
+      { content || '\u2005' }
     </div>
     { cursor &&
       <div style={{position: 'absolute', top: '0', wordWrap: 'break-word', width: '100%'}}>
