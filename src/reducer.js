@@ -9,17 +9,29 @@ export const defaultState = {
   }
 };
 
-export function moveCursor(col, row, direction) {
+export function moveCursor(col, row, direction, blocks) {
+  const block = blocks[row];
+  const maxInRow = block.length;
   switch (direction) {
     case 'LEFT':
       return {
-        col: col - 1,
+        col: Math.max(col - 1, -1),
         row: row
       };
     case 'RIGHT':
       return {
-        col: col + 1,
+        col: Math.min(col + 1, maxInRow - 1),
         row: row
+      };
+    case 'UP':
+      return {
+        col: col,
+        row: Math.max(row - 1, 0)
+      };
+    case 'DOWN':
+      return {
+        col: col,
+        row: Math.min(row + 1, blocks.length - 1),
       };
     default:
       return { col, row };
@@ -92,7 +104,7 @@ const handlers = {
       }
     } = state;
 
-    const { col, row } = moveCursor(characterIndex, blockIndex, direction);
+    const { col, row } = moveCursor(characterIndex, blockIndex, direction, state.blocks);
 
     return {
       ...state,
