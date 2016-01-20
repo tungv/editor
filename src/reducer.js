@@ -9,6 +9,23 @@ export const defaultState = {
   }
 };
 
+export function moveCursor(col, row, direction) {
+  switch (direction) {
+    case 'LEFT':
+      return {
+        col: col - 1,
+        row: row
+      };
+    case 'RIGHT':
+      return {
+        col: col + 1,
+        row: row
+      };
+    default:
+      return { col, row };
+  }
+}
+
 const handlers = {
   INSERT(state, {payload}) {
     const last = state.blocks.slice(-1)[0] || [];
@@ -63,6 +80,26 @@ const handlers = {
       cursor: {
         ...state.cursor,
         characterIndex: characterIndex - 1
+      }
+    };
+  },
+  MOVE_CURSOR(state, {payload}) {
+    const { direction } = payload;
+    const {
+      cursor: {
+        blockIndex,
+        characterIndex
+      }
+    } = state;
+
+    const { col, row } = moveCursor(characterIndex, blockIndex, direction);
+
+    return {
+      ...state,
+      cursor: {
+        ...state.cursor,
+        blockIndex: row,
+        characterIndex: col
       }
     };
   }

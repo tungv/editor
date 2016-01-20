@@ -20,7 +20,11 @@ const styles = {
 }
 
 const KEY_MAPS = {
-  [keys.ENTER]: 'NEW_LINE'
+  [keys.ENTER]: 'NEW_LINE',
+  [keys.LEFT]: 'MOVE_CURSOR',
+  [keys.RIGHT]: 'MOVE_CURSOR',
+  [keys.UP]: 'MOVE_CURSOR',
+  [keys.DOWN]: 'MOVE_CURSOR',
 }
 
 function handleKeyDown(e, dispatch) {
@@ -35,6 +39,17 @@ function handleKeyDown(e, dispatch) {
       }
     })
   }
+
+  ['LEFT', 'RIGHT', 'UP', 'DOWN'].some(direction => {
+    if (keyCode === keys[direction]) {
+      dispatch({
+        type: 'MOVE_CURSOR',
+        payload: {direction}
+      });
+      return true;
+    }
+    return false;
+  });
 
   if (stop) {
     e.preventDefault();

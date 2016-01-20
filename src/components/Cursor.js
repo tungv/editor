@@ -4,16 +4,17 @@ const styles = {
   root: {
     position: 'absolute',
     display: 'inline-block',
+    transform: 'translateX(-1.5px)'
   },
   verticalLine: {
     position: 'absolute',
     width: '0',
-    borderLeft: '2px solid red',
+    borderLeft: '1px solid red',
     marginLeft: '1px'
   },
   marker: {
-    width: '4px',
-    height: '4px',
+    width: '3px',
+    height: '3px',
     background: 'red'
   }
 }
